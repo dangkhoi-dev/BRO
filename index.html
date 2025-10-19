@@ -718,10 +718,47 @@
         .music-control.paused {
             animation: none;
         }
+
+        /* Auto-play notification */
+        .auto-play-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 10001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: slideDown 0.5s ease-out;
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .auto-play-notice.show {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Auto-play Notice -->
+    <div class="auto-play-notice" id="autoPlayNotice">
+        🎵 Nhạc sẽ tự động phát khi bạn tương tác với trang
+    </div>
+
     <!-- Music Control Button -->
     <div class="music-control" id="musicControl">
         <i class="fa-solid fa-music"></i>
@@ -1318,6 +1355,7 @@
         // Background Music Control
         const musicControl = document.getElementById('musicControl');
         const bgMusic = document.getElementById('bgMusic');
+        const autoPlayNotice = document.getElementById('autoPlayNotice');
         let isPlaying = false;
 
         // Debug function to check audio status
@@ -1408,20 +1446,78 @@
             console.log('Page loaded, attempting to play music');
             debugAudio();
             
-            // Try to auto-play after a short delay
-            setTimeout(() => {
+            // Try to auto-play immediately
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                musicControl.classList.remove('paused');
+                console.log('Auto-play successful on load');
+            }).catch(e => {
+                console.log('Auto-play prevented on load. Will try on user interaction.');
+                console.log('Error details:', e);
+                
+                // Show auto-play notice
+                autoPlayNotice.classList.add('show');
+                
+                // Try again after a short delay
+                setTimeout(() => {
+                    bgMusic.play().then(() => {
+                        isPlaying = true;
+                        musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                        musicControl.classList.remove('paused');
+                        autoPlayNotice.classList.remove('show');
+                        console.log('Auto-play successful after delay');
+                    }).catch(e2 => {
+                        console.log('Auto-play still blocked. Waiting for user interaction.');
+                    });
+                }, 2000);
+            });
+        });
+
+        // Auto-play on any user interaction
+        document.addEventListener('click', function() {
+            if (!isPlaying) {
                 bgMusic.play().then(() => {
                     isPlaying = true;
                     musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
                     musicControl.classList.remove('paused');
-                    console.log('Auto-play successful');
+                    autoPlayNotice.classList.remove('show');
+                    console.log('Auto-play successful on user click');
                 }).catch(e => {
-                    console.log('Auto-play prevented. User interaction required.');
-                    console.log('Error details:', e);
-                    // Keep default icon
+                    console.log('Auto-play still blocked on click');
                 });
-            }, 1000);
-        });
+            }
+        }, { once: true });
+
+        // Auto-play on mouse movement
+        document.addEventListener('mousemove', function() {
+            if (!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    musicControl.classList.remove('paused');
+                    autoPlayNotice.classList.remove('show');
+                    console.log('Auto-play successful on mouse move');
+                }).catch(e => {
+                    console.log('Auto-play blocked on mouse move');
+                });
+            }
+        }, { once: true });
+
+        // Auto-play on key press
+        document.addEventListener('keydown', function() {
+            if (!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    musicControl.classList.remove('paused');
+                    autoPlayNotice.classList.remove('show');
+                    console.log('Auto-play successful on key press');
+                }).catch(e => {
+                    console.log('Auto-play blocked on key press');
+                });
+            }
+        }, { once: true });
 
         // Also try to play music when user clicks on the rose
         document.querySelector("#rose-t").addEventListener('click', function() {
