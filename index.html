@@ -6,6 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>women's day</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./image/LOGO BRO.png">
+    <link rel="shortcut icon" type="image/png" href="./image/LOGO BRO.png">
+    <link rel="apple-touch-icon" href="./image/LOGO BRO.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap-grid.min.css"
         integrity="sha512-JQksK36WdRekVrvdxNyV3B0Q1huqbTkIQNbz1dlcFVgNynEMRl0F8OSqOGdVppLUDIvsOejhr/W5L3G/b3J+8w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -670,10 +676,68 @@
         .mewmew2 img {
             width: 100%;
         }
+
+        /* Music Control Styles */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .music-control i {
+            color: white;
+            font-size: 24px;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 25px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        .music-control.paused {
+            animation: none;
+        }
     </style>
 </head>
 
 <body>
+    <!-- Music Control Button -->
+    <div class="music-control" id="musicControl">
+        <i class="fa-solid fa-music"></i>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop preload="auto">
+        <!-- Try local file first -->
+        <source src="./audio/tikgo.me-18866990.mp4" type="audio/mp4">
+        <source src="./BRO/audio/tikgo.me-18866990.mp4" type="audio/mp4">
+        <!-- Fallback to online romantic music -->
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+        <!-- Another fallback -->
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzuG0fPTgjMGHm7A7+OZURE=" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
 
     <svg style="display: none;" id="theSvg" viewBox="-120 -30 240 180" enable-background="new 0 0 174 148"
         xml:space="preserve">
@@ -1109,7 +1173,7 @@
         // .textLetter text h2
         let indexText = 0;
         let textLetter = document.querySelector('.textLetter h2');
-        const textLetterH2 = "Gửi Hoàng Khả Ngân!";
+        const textLetterH2 = "Gửi Các bạn nữ B.R.O!";
         let timoutTextLetter;
 
         function textCharLetter() {
@@ -1131,13 +1195,13 @@
             clearInterval(timoutTextLetter);
             timoutTextLetter = setInterval(() => {
                 textCharLetter();
-            }, 200)
+            }, 100)
         }
 
         // chữ của thư bạn muốn gửi
         let indexTextContent = 0;
         let textLetterContent = document.querySelector('.contentLetter');
-        const textLetterP = "Hôm nay là ngày 20/10 anh chúc em luôn hạnh phúc và gặp nhiều may mắn trong cuộc sống nhá. Hãy luôn giữ mãi nụ cười trên môi nhá và đừng suy nghĩ nhiều về những thứ không đáng nha";
+        const textLetterP = "Hôm nay là ngày 20/10, Câu lạc bộ B.R.O chúc bạn luôn hạnh phúc và gặp nhiều may mắn trong cuộc sống. Hãy luôn giữ mãi nụ cười trên môi và mãi xinh đẹp như vậy nhé! Cảm ơn các bạn vì đã là một phần của B.R.O";
         let timoutTextLetterContent;
         function textCharLetterContent() {
             if (indexTextContent < textLetterP.length) {
@@ -1156,7 +1220,7 @@
             clearInterval(timoutTextLetterContent);
             timoutTextLetterContent = setInterval(() => {
                 textCharLetterContent();
-            }, 100)
+            }, 50)
         }
         $(document).ready(function () {
             $('.valentines').mouseenter(function () {
@@ -1247,6 +1311,129 @@
             },
             autoplay: true,
         });
+
+        // Background Music Control
+        const musicControl = document.getElementById('musicControl');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        // Debug function to check audio status
+        function debugAudio() {
+            console.log('Audio element:', bgMusic);
+            console.log('Audio src:', bgMusic.src || 'No src set');
+            console.log('Audio readyState:', bgMusic.readyState);
+            console.log('Audio networkState:', bgMusic.networkState);
+            console.log('Audio error:', bgMusic.error);
+            console.log('Current time:', bgMusic.currentTime);
+            console.log('Duration:', bgMusic.duration);
+        }
+
+        // Function to try different audio sources
+        function tryNextAudioSource() {
+            const sources = bgMusic.querySelectorAll('source');
+            const currentSrc = bgMusic.src;
+            let nextIndex = -1;
+            
+            sources.forEach((source, index) => {
+                if (source.src === currentSrc) {
+                    nextIndex = index + 1;
+                }
+            });
+            
+            if (nextIndex < sources.length) {
+                console.log('Trying next audio source...');
+                bgMusic.src = sources[nextIndex].src;
+                bgMusic.load();
+                return true;
+            }
+            return false;
+        }
+
+        // Function to toggle music
+        function toggleMusic() {
+            debugAudio(); // Debug info
+            
+            if (isPlaying) {
+                bgMusic.pause();
+                musicControl.innerHTML = '<i class="fa-solid fa-music"></i>';
+                musicControl.classList.add('paused');
+                console.log('Music paused');
+            } else {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    musicControl.classList.remove('paused');
+                    console.log('Music started playing');
+                }).catch(e => {
+                    console.error('Error playing music:', e);
+                    alert('Không thể phát nhạc. Vui lòng kiểm tra file nhạc và thử lại.');
+                });
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Click event for music control
+        musicControl.addEventListener('click', toggleMusic);
+
+        // Check if audio file exists and loads properly
+        bgMusic.addEventListener('loadstart', () => {
+            console.log('Audio loading started');
+        });
+
+        bgMusic.addEventListener('canplay', () => {
+            console.log('Audio can start playing');
+        });
+
+        bgMusic.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            console.error('Audio error details:', bgMusic.error);
+            
+            // Try next audio source automatically
+            if (tryNextAudioSource()) {
+                console.log('Automatically trying next audio source...');
+            } else {
+                console.log('No more audio sources to try');
+                // Show user-friendly message
+                musicControl.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)';
+                musicControl.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i>';
+                musicControl.title = 'Không thể tải nhạc. Vui lòng kiểm tra kết nối mạng.';
+            }
+        });
+
+        // Auto-play music when page loads (may be blocked by browser)
+        window.addEventListener('load', function() {
+            console.log('Page loaded, attempting to play music');
+            debugAudio();
+            
+            // Try to auto-play after a short delay
+            setTimeout(() => {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    musicControl.classList.remove('paused');
+                    console.log('Auto-play successful');
+                }).catch(e => {
+                    console.log('Auto-play prevented. User interaction required.');
+                    console.log('Error details:', e);
+                    // Keep default icon
+                });
+            }, 1000);
+        });
+
+        // Also try to play music when user clicks on the rose
+        document.querySelector("#rose-t").addEventListener('click', function() {
+            if (!isPlaying) {
+                console.log('Rose clicked, attempting to play music');
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                    musicControl.classList.remove('paused');
+                    console.log('Music started from rose click');
+                }).catch(e => {
+                    console.error('Could not play music from rose click:', e);
+                });
+            }
+        }, { once: true });
 
     </script>
 </body>
