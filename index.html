@@ -765,17 +765,13 @@
     </div>
 
     <!-- Background Music -->
-    <audio id="bgMusic" loop preload="auto">
-        <!-- Simple notification sound that works reliably -->
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
-        <!-- Alternative simple sound -->
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
-        <!-- Free music from Bensound (romantic theme) -->
-        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
-        <!-- Local file as fallback -->
+    <audio id="bgMusic" loop preload="auto" autoplay muted>
+        <!-- Your original music file - priority 1 -->
+        <source src="./BRO/audio/tikgo.me-18866990.mp4" type="audio/mp4">
+        <!-- Alternative path for your music -->
         <source src="./audio/tikgo.me-18866990.mp4" type="audio/mp4">
-        <!-- Embedded audio as ultimate fallback -->
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzuG0fPTgjMGHm7A7+OZURE=" type="audio/wav">
+        <!-- Free romantic music as backup -->
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -1446,7 +1442,10 @@
             console.log('Page loaded, attempting to play music');
             debugAudio();
             
-            // Try to auto-play immediately
+            // Unmute and try to play immediately
+            bgMusic.muted = false;
+            bgMusic.volume = 0.7; // Set volume to 70%
+            
             bgMusic.play().then(() => {
                 isPlaying = true;
                 musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -1459,24 +1458,43 @@
                 // Show auto-play notice
                 autoPlayNotice.classList.add('show');
                 
-                // Try again after a short delay
+                // Try again immediately after unmuting
                 setTimeout(() => {
+                    bgMusic.muted = false;
                     bgMusic.play().then(() => {
                         isPlaying = true;
                         musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
                         musicControl.classList.remove('paused');
                         autoPlayNotice.classList.remove('show');
-                        console.log('Auto-play successful after delay');
+                        console.log('Auto-play successful after unmute');
                     }).catch(e2 => {
                         console.log('Auto-play still blocked. Waiting for user interaction.');
                     });
-                }, 2000);
+                }, 100);
+            });
+        });
+
+        // Also try to play immediately when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready, attempting immediate auto-play');
+            bgMusic.muted = false;
+            bgMusic.volume = 0.7;
+            
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                musicControl.classList.remove('paused');
+                console.log('Auto-play successful on DOM ready');
+            }).catch(e => {
+                console.log('Auto-play prevented on DOM ready');
             });
         });
 
         // Auto-play on any user interaction
         document.addEventListener('click', function() {
             if (!isPlaying) {
+                bgMusic.muted = false;
+                bgMusic.volume = 0.7;
                 bgMusic.play().then(() => {
                     isPlaying = true;
                     musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -1492,6 +1510,8 @@
         // Auto-play on mouse movement
         document.addEventListener('mousemove', function() {
             if (!isPlaying) {
+                bgMusic.muted = false;
+                bgMusic.volume = 0.7;
                 bgMusic.play().then(() => {
                     isPlaying = true;
                     musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
@@ -1507,6 +1527,8 @@
         // Auto-play on key press
         document.addEventListener('keydown', function() {
             if (!isPlaying) {
+                bgMusic.muted = false;
+                bgMusic.volume = 0.7;
                 bgMusic.play().then(() => {
                     isPlaying = true;
                     musicControl.innerHTML = '<i class="fa-solid fa-pause"></i>';
