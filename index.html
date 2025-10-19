@@ -729,12 +729,15 @@
 
     <!-- Background Music -->
     <audio id="bgMusic" loop preload="auto">
-        <!-- Try local file first -->
-        <source src="./audio/tikgo.me-18866990.mp4" type="audio/mp4">
-        <source src="./BRO/audio/tikgo.me-18866990.mp4" type="audio/mp4">
-        <!-- Fallback to online romantic music -->
+        <!-- Simple notification sound that works reliably -->
         <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
-        <!-- Another fallback -->
+        <!-- Alternative simple sound -->
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+        <!-- Free music from Bensound (romantic theme) -->
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+        <!-- Local file as fallback -->
+        <source src="./audio/tikgo.me-18866990.mp4" type="audio/mp4">
+        <!-- Embedded audio as ultimate fallback -->
         <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBzuG0fPTgjMGHm7A7+OZURE=" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
